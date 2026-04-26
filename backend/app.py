@@ -532,6 +532,7 @@ def save_contacts():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
+
 # ===== AI EMOTIONAL SUPPORT CHATBOT =====
 @app.route('/api/ai/chat', methods=['POST'])
 def ai_chat():
@@ -541,30 +542,33 @@ def ai_chat():
         history = data.get('history', [])
 
         # Build conversation context
-            history_text = ""   
-            for h in history[-6:]:
-                role = "User" if h['role'] == 'user' else "Sakhi"
-                history_text += f"{role}: {h['content']}\n"
+        history_text = ""
+        for h in history[-6:]:
+            role = "User" if h['role'] == 'user' else "Sakhi"
+            history_text += f"{role}: {h['content']}\n"
 
-            prompt = f"""
-            You are Sakhi, SafeHer's warm and empathetic AI companion for women in India.
-            Your role is emotional support, safety guidance, and being a caring friend.
+        prompt = f"""
+You are Sakhi, SafeHer's warm and empathetic AI companion for women in India.
+Your role is emotional support, safety guidance, and being a caring friend.
 
-            Rules:
-            - Be warm, caring, non-judgmental
-            - ALWAYS give a DIFFERENT response based on what user said
-            - Respond in the same language as user (Hindi/English/Hinglish)
-            - Keep responses concise (2-4 sentences max)
-            - If user seems in danger, suggest SOS button
-            - Never repeat the same response twice
+Rules:
+- Be warm, caring, non-judgmental
+- ALWAYS give a DIFFERENT response based on what user said
+- Respond in the same language as user (Hindi/English/Hinglish)
+- Keep responses concise (2-4 sentences max)
+- If user seems in danger, suggest SOS button
+- Never repeat the same response twice
 
-            Conversation so far:
-            {history_text}
+Conversation so far:
+{history_text}
 
-            User just said: {message}
+User just said: {message}
 
-            Give a UNIQUE, contextual response to what user just said (not a generic reply):
-            """
+Give a UNIQUE, contextual response to what user just said (not a generic reply):
+"""
+
+        response = gemini_model.generate_content(prompt)
+        reply = response.text.strip()
 
         # Check for distress keywords
         distress_words = ['help', 'danger', 'scared', 'hurt', 'bachao', 'darr', 'unsafe']
@@ -584,7 +588,6 @@ def ai_chat():
             "isDistress": False,
             "showSOS": False
         })
-
 
 # ===== TRIP MONITORING =====
 @app.route('/api/trip/start', methods=['POST'])
