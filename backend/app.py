@@ -541,33 +541,30 @@ def ai_chat():
         history = data.get('history', [])
 
         # Build conversation context
-        history_text = ""
-        for h in history[-6:]:  # last 6 messages only
-            role = "User" if h['role'] == 'user' else "SafeHer AI"
-            history_text += f"{role}: {h['content']}\n"
+            history_text = ""   
+            for h in history[-6:]:
+                role = "User" if h['role'] == 'user' else "Sakhi"
+                history_text += f"{role}: {h['content']}\n"
 
-        prompt = f"""
-        You are Sakhi, SafeHer's warm and empathetic AI companion for women in India.
-        Your role is emotional support, safety guidance, and being a caring friend.
-        
-        Rules:
-        - Be warm, caring, non-judgmental
-        - Respond in the same language as user (Hindi/English/Hinglish)
-        - Keep responses concise (2-4 sentences max)
-        - If user seems in danger or distress, gently suggest using SOS button
-        - Never store or repeat personal details
-        - If user mentions self-harm, provide helpline: iCall 9152987821
-        
-        Conversation history:
-        {history_text}
-        
-        User: {message}
-        
-        Respond as Sakhi (just the response text, no prefix):
-        """
+            prompt = f"""
+            You are Sakhi, SafeHer's warm and empathetic AI companion for women in India.
+            Your role is emotional support, safety guidance, and being a caring friend.
 
-        response = gemini_model.generate_content(prompt)
-        reply = response.text.strip()
+            Rules:
+            - Be warm, caring, non-judgmental
+            - ALWAYS give a DIFFERENT response based on what user said
+            - Respond in the same language as user (Hindi/English/Hinglish)
+            - Keep responses concise (2-4 sentences max)
+            - If user seems in danger, suggest SOS button
+            - Never repeat the same response twice
+
+            Conversation so far:
+            {history_text}
+
+            User just said: {message}
+
+            Give a UNIQUE, contextual response to what user just said (not a generic reply):
+            """
 
         # Check for distress keywords
         distress_words = ['help', 'danger', 'scared', 'hurt', 'bachao', 'darr', 'unsafe']
