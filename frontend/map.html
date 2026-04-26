@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeHer - Live Safety Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      border-radius: 20px;
+      border: 2px solid rgba(155, 89, 182, 0.3);
+    }
+    .map-section {
+      padding: 60px 40px;
+      background: var(--darker);
+    }
+    .map-section h2 {
+      color: var(--primary);
+      font-size: 36px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .map-controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .map-btn {
+      padding: 10px 25px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    .map-btn.danger {
+      background: #e74c3c;
+      color: white;
+    }
+    .map-btn.safe {
+      background: #2ecc71;
+      color: white;
+    }
+    .map-btn.route {
+      background: #9b59b6;
+      color: white;
+    }
+    .map-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+    .map-legend {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+    .location-info {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">🛡️ SafeHer</div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="index.html">🏠 Home</a>
+      <a href="map.html" style="color:#9b59b6">🗺️ Map</a>
+      <a href="map.html" style="color:#9b59b6">Safety Map</a>
+    </div>
+  </nav>
+
+  <!-- MAP SECTION -->
+  <section class="map-section">
+    <h2>🗺️ Live Safety Map</h2>
+
+    <div class="map-controls">
+      <button class="map-btn danger" onclick="reportDangerZone()">
+        🔴 Report Danger Zone
+      </button>
+      <button class="map-btn safe" onclick="markSafeZone()">
+        🟢 Mark Safe Zone
+      </button>
+      <button class="map-btn route" onclick="findSafeRoute()">
+        🗺️ Find Safe Route
+      </button>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="map-legend">
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#e74c3c"></div>
+        <span>Danger Zone</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#2ecc71"></div>
+        <span>Safe Zone</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#3498db"></div>
+        <span>Your Location</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#9b59b6"></div>
+        <span>Police Station</span>
+      </div>
+    </div>
+
+    <div class="location-info" id="locationInfo">
+      📍 Getting your location...
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    // Initialize map centered on India
+    let map = L.map('map').setView([20.5937, 78.9629], 5);
+    let userMarker = null;
+    let userLocation = null;
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Custom Icons
+    const dangerIcon = L.divIcon({
+      html: '🔴',
+      className: 'emoji-icon',
+      iconSize: [30, 30]
+    });
+
+    const safeIcon = L.divIcon({
+      html: '🟢',
+      className: 'emoji-icon',
+      iconSize: [30, 30]
+    });
+
+    const policeIcon = L.divIcon({
+      html: '👮',
+      className: 'emoji-icon',
+      iconSize: [30, 30]
+    });
+
+    const userIcon = L.divIcon({
+      html: '📍',
+      className: 'emoji-icon',
+      iconSize: [30, 30]
+    });
+
+    // Sample danger zones around India
+    const sampleDangerZones = [
+      { lat: 28.6139, lng: 77.2090, desc: "Reported unsafe at night" },
+      { lat: 19.0760, lng: 72.8777, desc: "Poorly lit area" },
+      { lat: 12.9716, lng: 77.5946, desc: "Reported incidents" },
+      { lat: 22.5726, lng: 88.3639, desc: "Avoid after 10PM" },
+      { lat: 17.3850, lng: 78.4867, desc: "Community reported" }
+    ];
+
+    // Sample safe zones
+    const sampleSafeZones = [
+      { lat: 28.6200, lng: 77.2100, desc: "Well lit, police patrol" },
+      { lat: 19.0800, lng: 72.8800, desc: "Safe neighborhood" },
+      { lat: 12.9800, lng: 77.5900, desc: "CCTV covered area" }
+    ];
+
+    // Sample police stations
+    const policeStations = [
+      { lat: 28.6300, lng: 77.2200, desc: "Delhi Police Station" },
+      { lat: 19.0700, lng: 72.8700, desc: "Mumbai Police Station" },
+      { lat: 12.9700, lng: 77.5800, desc: "Bangalore Police Station" }
+    ];
+
+    // Add danger zones to map
+    sampleDangerZones.forEach(zone => {
+      L.marker([zone.lat, zone.lng], {icon: dangerIcon})
+        .addTo(map)
+        .bindPopup(`
+          <b style="color:red">⚠️ Danger Zone</b><br>
+          ${zone.desc}<br>
+          <small>Community reported</small>
+        `);
+
+      // Add danger circle
+      L.circle([zone.lat, zone.lng], {
+        color: 'red',
+        fillColor: '#e74c3c',
+        fillOpacity: 0.2,
+        radius: 500
+      }).addTo(map);
+    });
+
+    // Add safe zones
+    sampleSafeZones.forEach(zone => {
+      L.marker([zone.lat, zone.lng], {icon: safeIcon})
+        .addTo(map)
+        .bindPopup(`
+          <b style="color:green">✅ Safe Zone</b><br>
+          ${zone.desc}
+        `);
+    });
+
+    // Add police stations
+    policeStations.forEach(station => {
+      L.marker([station.lat, station.lng], {icon: policeIcon})
+        .addTo(map)
+        .bindPopup(`
+          <b>👮 ${station.desc}</b><br>
+          <a href="tel:100">📞 Call 100</a>
+        `);
+    });
+
+    // Get user location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          userLocation = {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          };
+
+          // Center map on user
+          map.setView([userLocation.lat, userLocation.lng], 14);
+
+          // Add user marker
+          userMarker = L.marker(
+            [userLocation.lat, userLocation.lng],
+            {icon: userIcon}
+          )
+          .addTo(map)
+          .bindPopup('📍 You are here!')
+          .openPopup();
+
+          // Add accuracy circle
+          L.circle([userLocation.lat, userLocation.lng], {
+            color: '#3498db',
+            fillColor: '#3498db',
+            fillOpacity: 0.1,
+            radius: 100
+          }).addTo(map);
+
+          document.getElementById('locationInfo').textContent =
+            `📍 Your location: ${userLocation.lat.toFixed(4)}, ${userLocation.lng.toFixed(4)}`;
+        },
+        (err) => {
+          document.getElementById('locationInfo').textContent =
+            '⚠️ Location access denied. Enable location for best experience.';
+        }
+      );
+    }
+
+    // Report danger zone
+    function reportDangerZone() {
+      if (!userLocation) {
+        alert('Please enable location first!');
+        return;
+      }
+
+      const desc = prompt('Describe the danger (e.g., "Poorly lit area", "Suspicious activity"):');
+      if (desc) {
+        L.marker([userLocation.lat, userLocation.lng], {icon: dangerIcon})
+          .addTo(map)
+          .bindPopup(`
+            <b style="color:red">⚠️ New Report</b><br>
+            ${desc}<br>
+            <small>Just reported</small>
+          `)
+          .openPopup();
+
+        L.circle([userLocation.lat, userLocation.lng], {
+          color: 'red',
+          fillColor: '#e74c3c',
+          fillOpacity: 0.2,
+          radius: 300
+        }).addTo(map);
+
+        // Send to backend
+        fetch('https://safeher-0x4u.onrender.com/api/danger-zones/report', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            location: userLocation,
+            description: desc,
+            severity: 'medium'
+          })
+        });
+
+        alert('✅ Danger zone reported! Thank you for keeping the community safe.');
+      }
+    }
+
+    // Mark safe zone
+    function markSafeZone() {
+      if (!userLocation) {
+        alert('Please enable location first!');
+        return;
+      }
+
+      L.marker([userLocation.lat, userLocation.lng], {icon: safeIcon})
+        .addTo(map)
+        .bindPopup('<b style="color:green">✅ Safe Zone</b><br>Marked by community')
+        .openPopup();
+
+      alert('✅ Safe zone marked! Thank you!');
+    }
+
+    // Find safe route
+      async function findSafeRoute() {
+    const dest = prompt('Enter destination (e.g., "Connaught Place, Delhi"):');
+    if (!dest) return;
+
+    // Show loading
+    showMapNotification('🤖 AI analyzing route safety...');
+
+    try {
+      const response = await fetch(
+        'https://safeher-0x4u.onrender.com/api/ai/analyze-route',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            origin: userLocation,
+            destination: dest
+          })
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Show AI analysis panel
+        showRouteAnalysis(data, dest);
+
+        // Draw route on map
+        if (userLocation) {
+          drawSafeRoute(dest, data.safetyRating);
+        }
+      }
+    } catch(err) {
+      showMapNotification('⚠️ Could not analyze route. Stay safe!');
+    }
+  }
+
+  function showRouteAnalysis(data, destination) {
+    // Remove existing panel
+    const existing = document.getElementById('routePanel');
+    if (existing) existing.remove();
+
+    const safetyColor = data.safetyRating >= 7 ? '#2ecc71' :
+                        data.safetyRating >= 4 ? '#f39c12' : '#e74c3c';
+
+    const panel = document.createElement('div');
+    panel.id = 'routePanel';
+    panel.style.cssText = `
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #16213e;
+      border-top: 2px solid ${safetyColor};
+      padding: 20px;
+      z-index: 9999;
+      max-height: 60vh;
+      overflow-y: auto;
+    `;
+
+    panel.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h3 style="color:${safetyColor}">
+          🗺️ Route to ${destination}
+        </h3>
+        <button onclick="document.getElementById('routePanel').remove()"
+          style="background:none;border:none;color:white;font-size:20px;cursor:pointer;">
+          ✕
+        </button>
+      </div>
+
+      <div style="margin:15px 0;padding:10px;background:rgba(255,255,255,0.05);
+        border-radius:10px;">
+        <div style="font-size:24px;color:${safetyColor};font-weight:700;">
+          Safety Score: ${data.safetyRating}/10
+        </div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:5px;">
+          ${data.recommended ? '✅ Route recommended' : '⚠️ Use with caution'}
+        </div>
+      </div>
+
+      ${data.concerns && data.concerns.length > 0 ? `
+      <div style="margin:10px 0;">
+        <div style="color:#e74c3c;font-weight:600;margin-bottom:8px;">
+          ⚠️ Safety Concerns:
+        </div>
+        ${data.concerns.map(c => `
+          <div style="padding:5px 0;font-size:13px;color:rgba(255,255,255,0.7);">
+            • ${c}
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
+
+      ${data.tips && data.tips.length > 0 ? `
+      <div style="margin:10px 0;">
+        <div style="color:#2ecc71;font-weight:600;margin-bottom:8px;">
+          💡 Safety Tips:
+        </div>
+        ${data.tips.map(t => `
+          <div style="padding:5px 0;font-size:13px;color:rgba(255,255,255,0.7);">
+            ✓ ${t}
+          </div>
+        `).join('')}
+      </div>
+      ` : ''}
+
+      ${data.precautions ? `
+      <div style="margin:10px 0;padding:10px;background:rgba(155,89,182,0.2);
+        border-radius:10px;font-size:13px;color:rgba(255,255,255,0.8);">
+        🛡️ ${data.precautions}
+      </div>
+      ` : ''}
+
+      <div style="display:flex;gap:10px;margin-top:15px;">
+        <button onclick="startJourneyTracking('${destination}')"
+          style="flex:1;padding:12px;background:#9b59b6;color:white;
+          border:none;border-radius:10px;cursor:pointer;font-weight:600;">
+          🚶 Start Journey
+        </button>
+        <button onclick="document.getElementById('routePanel').remove()"
+          style="flex:1;padding:12px;background:rgba(255,255,255,0.1);
+          color:white;border:none;border-radius:10px;cursor:pointer;">
+          Cancel
+        </button>
+      </div>
+    `;
+
+    document.body.appendChild(panel);
+  }
+
+  function drawSafeRoute(destination, safetyRating) {
+    // Draw a visual route line on map
+    if (!userLocation) return;
+
+    const color = safetyRating >= 7 ? '#2ecc71' :
+                  safetyRating >= 4 ? '#f39c12' : '#e74c3c';
+
+    // Add destination marker
+    const destIcon = L.divIcon({
+      html: '🎯',
+      className: 'emoji-icon',
+      iconSize: [30, 30]
+    });
+
+    // Geocode destination using Nominatim (free)
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destination)}`)
+      .then(res => res.json())
+      .then(results => {
+        if (results && results[0]) {
+          const destLat = parseFloat(results[0].lat);
+          const destLng = parseFloat(results[0].lon);
+
+          // Add destination marker
+          L.marker([destLat, destLng], {icon: destIcon})
+            .addTo(map)
+            .bindPopup(`🎯 Destination: ${destination}`)
+            .openPopup();
+
+          // Draw route line
+          const routeLine = L.polyline(
+            [[userLocation.lat, userLocation.lng], [destLat, destLng]],
+            {
+              color: color,
+              weight: 4,
+              opacity: 0.8,
+              dashArray: safetyRating < 7 ? '10, 10' : null
+            }
+          ).addTo(map);
+
+          // Fit map to show both points
+          map.fitBounds(routeLine.getBounds(), {padding: [50, 50]});
+
+          showMapNotification(`🗺️ Route drawn! Safety: ${safetyRating}/10`);
+        }
+      })
+      .catch(err => console.log('Geocoding error:', err));
+  }
+
+  function startJourneyTracking(destination) {
+    document.getElementById('routePanel').remove();
+    showMapNotification(`🚶 Journey started to ${destination}! Stay safe! 💜`);
+
+    // Update location every 30 seconds during journey
+    const journeyInterval = setInterval(() => {
+      if (userLocation) {
+        db.ref('live_location').set({
+          lat: userLocation.lat,
+          lng: userLocation.lng,
+          timestamp: new Date().toISOString(),
+          destination: destination,
+          journeyActive: true
+        });
+      }
+    }, 30000);
+
+    // Store interval ID to stop later
+    window.journeyInterval = journeyInterval;
+
+    showNotification(`📍 Live tracking active for journey to ${destination}`);
+  }
+
+  function showMapNotification(message) {
+    const existing = document.querySelector('.map-notification');
+    if (existing) existing.remove();
+
+    const notif = document.createElement('div');
+    notif.className = 'map-notification';
+    notif.textContent = message;
+    notif.style.cssText = `
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(155, 89, 182, 0.95);
+      color: white;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 14px;
+      z-index: 10000;
+      max-width: 90%;
+      text-align: center;
+    `;
+    document.body.appendChild(notif);
+    setTimeout(() => notif.remove(), 4000);
+  }
+  </script>
+</body>
+</html>

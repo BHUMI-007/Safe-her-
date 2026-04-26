@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+  // Check login before page load
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeHer - Your Safety Companion</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#9b59b6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="SafeHer">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">🛡️ SafeHer</div>
+    <div class="nav-links">
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#contacts">My Circle</a>
+    <a href="map.html">🗺️ Map</a>
+    <a href="#" onclick="logout()" style="color:#e74c3c;">Logout</a>
+  </div>
+  </nav>
+
+  <!-- HOME SECTION -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Your Safety, <span>Our Priority</span></h1>
+      <p>AI-powered women's safety companion with real-time SOS, safe routes & community alerts</p>
+      <button class="sos-btn" onclick="triggerSOS()">
+        🆘 SOS EMERGENCY
+      </button>
+      <p class="sos-hint">Hold for 3 seconds to activate</p>
+      <button class="silent-btn" onclick="activateSilentMode()">
+        🤫 Silent Mode
+      </button>
+    </div>
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-dot green"></span>
+        <span>You are Safe</span>
+      </div>
+      <div class="status-item">
+        <span>📍 Location Active</span>
+      </div>
+      <div class="status-item">
+        <span>👥 3 Contacts Ready</span>
+      </div>
+    </div>
+    <!-- AI RISK PANEL -->
+<div class="ai-panel" id="aiPanel">
+  <div class="ai-item">
+    <span>🤖 AI Risk Score:</span>
+    <span id="aiRiskScore">Analyzing...</span>
+  </div>
+  <div class="ai-item">
+    <span>🧠 AI Status:</span>
+    <span id="aiStatus">Gemini AI Active</span>
+  </div>
+  <div class="ai-item">
+    <span>🎙️ Voice Guard:</span>
+    <span id="voiceStatus">Listening...</span>
+  </div>
+</div>
+  </section>
+
+  <!-- FEATURES SECTION -->
+  <section class="features" id="features">
+    <h2>How SafeHer Protects You</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🆘</div>
+        <h3>Smart SOS</h3>
+        <p>One tap alerts all your trusted contacts with your live location instantly</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🗺️</div>
+        <h3>Safe Routes</h3>
+        <p>Navigate through safest paths avoiding reported danger zones</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔴</div>
+        <h3>Danger Heatmap</h3>
+        <p>Community reported unsafe areas shown on live map</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>AI Check-in</h3>
+        <p>AI learns your routine and proactively checks on you when something seems off</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📵</div>
+        <h3>Offline Mode</h3>
+        <p>Core SOS works without internet via SMS fallback</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤫</div>
+        <h3>Silent Alert</h3>
+        <p>Discreet fake screen while secretly sending SOS</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUSTED CIRCLE -->
+  <section class="contacts" id="contacts">
+    <h2>My Trusted Circle</h2>
+    <div class="contacts-grid" id="contactsList"></div>
+    <button class="add-contact-btn" onclick="showAddContact()">+ Add Contact</button>
+
+    <!-- Add Contact Form -->
+    <div class="modal" id="contactModal">
+      <div class="modal-content">
+        <h3>Add Trusted Contact</h3>
+        <input type="text" id="contactName" placeholder="Name" />
+        <input type="tel" id="contactPhone" placeholder="Phone Number" />
+        <button onclick="addContact()">Save Contact</button>
+        <button class="cancel" onclick="hideModal()">Cancel</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOS ALERT OVERLAY -->
+  <div class="sos-overlay" id="sosOverlay">
+    <div class="sos-content">
+      <h1>🆘 SOS ACTIVATED</h1>
+      <p>Alerting your trusted circle...</p>
+      <p id="sosStatus">Sending location to contacts...</p>
+      <button onclick="cancelSOS()">Cancel SOS</button>
+    </div>
+  </div>
+    <!-- Offline Panel -->
+  <div id="offlinePanel" class="offline-panel hidden">
+    <div class="offline-content">
+      <h2>📵 You're Offline</h2>
+      <p>Don't worry — emergency features still work!</p>
+      <ul>
+        <li>✅ SOS button works</li>
+        <li>✅ Trusted contacts saved</li>
+        <li>✅ Last known location saved</li>
+        <li>❌ Live tracking paused</li>
+        <li>❌ AI features paused</li>
+      </ul>
+      <button onclick="dismissOfflinePanel()">Got it</button>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
