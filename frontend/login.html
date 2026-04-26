@@ -20,78 +20,141 @@
     .logo { font-size: 48px; margin-bottom: 10px; }
     .title { font-size: 32px; font-weight: 700; color: #9b59b6; margin-bottom: 5px; }
     .subtitle { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 40px; text-align: center; }
+
     .login-card {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 20px;
       padding: 40px;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
     }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 4px;
+      margin-bottom: 28px;
+      gap: 4px;
+    }
+    .tab {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      background: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .tab.active {
+      background: #9b59b6;
+      color: white;
+    }
+
     .step { display: none; }
     .step.active { display: block; }
-    .input-group { margin-bottom: 20px; }
-    .input-group label { display: block; font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+
+    .input-group { margin-bottom: 18px; }
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
     .input-group input {
       width: 100%;
       background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.15);
       border-radius: 10px;
-      padding: 15px;
+      padding: 13px 15px;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       outline: none;
+      transition: border 0.3s;
+      font-family: 'Poppins', sans-serif;
     }
     .input-group input:focus { border-color: #9b59b6; }
-    .btn { width: 100%; padding: 15px; border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-    .btn-primary { background: #9b59b6; color: white; }
-    .btn-primary:hover { background: #8e44ad; }
-    .btn-secondary { background: rgba(255,255,255,0.1); color: white; margin-top: 10px; }
-    .error { color: #e74c3c; font-size: 13px; margin-top: 10px; text-align: center; }
-    .success { color: #2ecc71; font-size: 13px; margin-top: 10px; text-align: center; }
-    #recaptcha-container { margin: 15px 0; }
+    .input-group input::placeholder { color: rgba(255,255,255,0.25); }
 
-    /* FIXED phone input */
-    .phone-input { display: flex; gap: 10px; align-items: stretch; }
-    .country-code-label {
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: 'Poppins', sans-serif;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #9b59b6, #e91e8c);
+      color: white;
+      margin-top: 6px;
+    }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary {
       background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
-      padding: 15px;
-      color: white;
-      font-size: 16px;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
+      color: rgba(255,255,255,0.7);
+      margin-top: 10px;
     }
-    #phoneNumber {
-      flex: 1;
-      width: 0;
-      min-width: 0;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
-      padding: 15px;
-      color: white;
-      font-size: 16px;
-      outline: none;
-    }
-    #phoneNumber:focus { border-color: #9b59b6; }
 
-    .loading { text-align: center; padding: 20px; color: rgba(255,255,255,0.6); }
-    .otp-inputs { display: flex; gap: 8px; justify-content: center; margin: 20px 0; }
-    .otp-input {
-      width: 45px;
-      height: 55px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 10px;
-      color: white;
-      font-size: 24px;
+    .error { color: #e74c3c; font-size: 13px; margin-top: 12px; text-align: center; }
+    .success { color: #2ecc71; font-size: 13px; margin-top: 12px; text-align: center; }
+
+    .divider {
       text-align: center;
-      outline: none;
+      color: rgba(255,255,255,0.3);
+      font-size: 12px;
+      margin: 18px 0;
+      position: relative;
     }
-    .otp-input:focus { border-color: #9b59b6; }
+    .divider::before, .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    .loading {
+      text-align: center;
+      padding: 30px 20px;
+      color: rgba(255,255,255,0.6);
+    }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(155,89,182,0.3);
+      border-top-color: #9b59b6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .password-wrapper { position: relative; }
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -102,50 +165,77 @@
 
   <div class="login-card">
 
-    <!-- STEP 1: Phone Number -->
-    <div class="step active" id="step1">
-      <h3 style="margin-bottom:20px;font-size:20px;">Enter Your Phone Number</h3>
-      <div class="input-group">
-        <label>Phone Number</label>
-        <div class="phone-input">
-          <span class="country-code-label">+91</span>
-          <input type="tel" id="phoneNumber" placeholder="9999999999" maxlength="10" inputmode="numeric"/>
+    <!-- ===== STEP 1: Login / Register ===== -->
+    <div class="step active" id="stepAuth">
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+        <button class="tab" id="tabRegister" onclick="switchTab('register')">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm">
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="you@email.com"/>
         </div>
+        <div class="input-group">
+          <label>Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="loginPassword" placeholder="Enter password" onkeypress="if(event.key==='Enter') doLogin()"/>
+            <button class="toggle-pass" onclick="togglePassword('loginPassword')">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doLogin()">Login →</button>
+        <div style="text-align:center;margin-top:14px;">
+          <span style="font-size:12px;color:rgba(255,255,255,0.4);cursor:pointer;" onclick="forgotPassword()">
+            Forgot password?
+          </span>
+        </div>
+        <div id="loginError" class="error"></div>
+        <div id="loginSuccess" class="success"></div>
       </div>
-      <div id="recaptcha-container"></div>
-      <button class="btn btn-primary" onclick="sendOTP()">Send OTP 📱</button>
-      <div id="step1Error" class="error"></div>
+
+      <!-- Register Form -->
+      <div id="registerForm" style="display:none;">
+        <div class="input-group">
+          <label>Your Name</label>
+          <input type="text" id="regName" placeholder="Priya Sharma"/>
+        </div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="regEmail" placeholder="you@email.com"/>
+        </div>
+        <div class="input-group">
+          <label>Password (min 6 characters)</label>
+          <div class="password-wrapper">
+            <input type="password" id="regPassword" placeholder="Create password"/>
+            <button class="toggle-pass" onclick="togglePassword('regPassword')">👁</button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label>Confirm Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="regConfirm" placeholder="Repeat password" onkeypress="if(event.key==='Enter') doRegister()"/>
+            <button class="toggle-pass" onclick="togglePassword('regConfirm')">👁</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="doRegister()">Create Account 🛡️</button>
+        <div id="registerError" class="error"></div>
+        <div id="registerSuccess" class="success"></div>
+      </div>
+
     </div>
 
-    <!-- STEP 2: OTP Verification -->
-    <div class="step" id="step2">
-      <h3 style="margin-bottom:10px;font-size:20px;">Enter OTP</h3>
-      <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:20px;">
-        OTP sent to <span id="phoneDisplay"></span>
-      </p>
-      <div class="otp-inputs">
-        <input type="text" class="otp-input" id="otp1" maxlength="1" inputmode="numeric" oninput="moveToNext(this,'otp2')"/>
-        <input type="text" class="otp-input" id="otp2" maxlength="1" inputmode="numeric" oninput="moveToNext(this,'otp3')"/>
-        <input type="text" class="otp-input" id="otp3" maxlength="1" inputmode="numeric" oninput="moveToNext(this,'otp4')"/>
-        <input type="text" class="otp-input" id="otp4" maxlength="1" inputmode="numeric" oninput="moveToNext(this,'otp5')"/>
-        <input type="text" class="otp-input" id="otp5" maxlength="1" inputmode="numeric" oninput="moveToNext(this,'otp6')"/>
-        <input type="text" class="otp-input" id="otp6" maxlength="1" inputmode="numeric" oninput="autoVerify()"/>
-      </div>
-      <button class="btn btn-primary" onclick="verifyOTP()">Verify & Login ✅</button>
-      <button class="btn btn-secondary" onclick="resendOTP()">Resend OTP</button>
-      <div id="step2Error" class="error"></div>
-    </div>
+    <!-- ===== STEP 2: Profile Setup (new users) ===== -->
+    <div class="step" id="stepProfile">
+      <h3 style="margin-bottom:6px;font-size:20px;">Setup Your Profile</h3>
+      <p style="color:rgba(255,255,255,0.4);font-size:12px;margin-bottom:22px;">Add emergency contacts to activate SOS</p>
 
-    <!-- STEP 3: Profile Setup -->
-    <div class="step" id="step3">
-      <h3 style="margin-bottom:20px;font-size:20px;">Setup Your Profile</h3>
-      <div class="input-group">
-        <label>Your Name</label>
-        <input type="text" id="userName" placeholder="Enter your name"/>
-      </div>
       <div class="input-group">
         <label>Emergency Contact 1 Name</label>
-        <input type="text" id="contact1Name" placeholder="Mom"/>
+        <input type="text" id="contact1Name" placeholder="Mom / Dad / Friend"/>
       </div>
       <div class="input-group">
         <label>Emergency Contact 1 Phone</label>
@@ -153,22 +243,23 @@
       </div>
       <div class="input-group">
         <label>Emergency Contact 2 Name (Optional)</label>
-        <input type="text" id="contact2Name" placeholder="Dad"/>
+        <input type="text" id="contact2Name" placeholder="Sister / Friend"/>
       </div>
       <div class="input-group">
         <label>Emergency Contact 2 Phone (Optional)</label>
         <input type="tel" id="contact2Phone" placeholder="+919876543210"/>
       </div>
-      <button class="btn btn-primary" onclick="saveProfile()">Save & Start 🛡️</button>
-      <div id="step3Error" class="error"></div>
+      <button class="btn btn-primary" onclick="saveProfile()">Save & Start SafeHer 🛡️</button>
+      <button class="btn btn-secondary" onclick="skipProfile()">Skip for now →</button>
+      <div id="profileError" class="error"></div>
     </div>
 
-    <!-- STEP 4: Loading -->
-    <div class="step" id="step4">
+    <!-- ===== STEP 3: Loading ===== -->
+    <div class="step" id="stepLoading">
       <div class="loading">
-        <div style="font-size:48px;margin-bottom:20px;">🛡️</div>
-        <div style="font-size:18px;margin-bottom:10px;">Setting up SafeHer...</div>
-        <div style="color:rgba(255,255,255,0.5);font-size:14px;">Please wait...</div>
+        <div class="spinner"></div>
+        <div style="font-size:16px;margin-bottom:8px;">Setting up SafeHer...</div>
+        <div style="font-size:13px;">Please wait 💜</div>
       </div>
     </div>
 
@@ -192,167 +283,209 @@
     const auth = firebase.auth();
     const db = firebase.database();
 
-    let confirmationResult = null;
-    let recaptchaVerifier = null;
-    let otpSent = false;
-
     // If already logged in → go to app
-    auth.onAuthStateChanged((user) => {
-    if (user && localStorage.getItem('safeher_user_id')) {
-        window.location.href = 'index.html';
-    }
-    });
-
-    function initRecaptcha() {
-      if (recaptchaVerifier) return;
-      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        size: 'normal',
-        callback: () => console.log('reCAPTCHA solved')
-      });
-      recaptchaVerifier.render();
-    }
-
-    async function sendOTP() {
-      const raw = document.getElementById('phoneNumber').value;
-      const digits = raw.replace(/\D/g, '');
-      const fullPhone = '+91' + digits;
-      const errorEl = document.getElementById('step1Error');
-
-      if (digits.length !== 10) {
-        errorEl.textContent = '⚠️ Enter exactly 10 digits. Got: ' + digits.length;
-        return;
-      }
-
-      errorEl.textContent = 'Sending OTP...';
-      errorEl.style.color = '#2ecc71';
-
-      try {
-        if (!recaptchaVerifier) initRecaptcha();
-        confirmationResult = await auth.signInWithPhoneNumber(fullPhone, recaptchaVerifier);
-        otpSent = true;
-
-        document.getElementById('step1').classList.remove('active');
-        document.getElementById('step2').classList.add('active');
-        document.getElementById('phoneDisplay').textContent = fullPhone;
-        document.getElementById('otp1').focus();
-
-      } catch(err) {
-        console.error(err);
-        errorEl.textContent = '⚠️ ' + err.message;
-        errorEl.style.color = '#e74c3c';
-        if (recaptchaVerifier) {
-          recaptchaVerifier.clear();
-          recaptchaVerifier = null;
-          document.getElementById('recaptcha-container').innerHTML = '';
-          setTimeout(initRecaptcha, 500);
-        }
-      }
-    }
-
-    function moveToNext(current, nextId) {
-      if (current.value.length >= 1) {
-        document.getElementById(nextId)?.focus();
-      }
-    }
-
-    function autoVerify() {
-      const otp = ['otp1','otp2','otp3','otp4','otp5','otp6']
-        .map(id => document.getElementById(id).value).join('');
-      if (otp.length === 6) verifyOTP();
-    }
-
-    async function verifyOTP() {
-      const otp = ['otp1','otp2','otp3','otp4','otp5','otp6']
-        .map(id => document.getElementById(id).value).join('');
-      const errorEl = document.getElementById('step2Error');
-
-      if (otp.length !== 6) {
-        errorEl.textContent = '⚠️ Enter complete 6-digit OTP';
-        return;
-      }
-
-      errorEl.textContent = 'Verifying...';
-      errorEl.style.color = '#2ecc71';
-
-      try {
-        const result = await confirmationResult.confirm(otp);
-        const user = result.user;
-        const snapshot = await db.ref(`users/${user.uid}`).once('value');
-
-        if (snapshot.exists()) {
-          const profile = snapshot.val();
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const snap = await db.ref(`users/${user.uid}`).once('value');
+        if (snap.exists()) {
+          const profile = snap.val();
           localStorage.setItem('safeher_user_id', user.uid);
-          localStorage.setItem('safeher_user_name', profile.name);
+          localStorage.setItem('safeher_user_name', profile.name || user.email.split('@')[0]);
           if (profile.contacts) {
             localStorage.setItem('safeher_contacts', JSON.stringify(profile.contacts));
           }
           window.location.href = 'index.html';
-        } else {
-          document.getElementById('step2').classList.remove('active');
-          document.getElementById('step3').classList.add('active');
         }
-
-      } catch(err) {
-        console.error(err);
-        if (err.code === 'auth/invalid-verification-code') {
-          errorEl.textContent = '⚠️ Wrong OTP! Try again.';
-        } else if (err.code === 'auth/code-expired') {
-          errorEl.textContent = '⚠️ OTP expired! Resend karo.';
-        } else {
-          errorEl.textContent = '⚠️ ' + err.message;
-        }
-        errorEl.style.color = '#e74c3c';
       }
+    });
+
+    // ===== TAB SWITCH =====
+    function switchTab(tab) {
+      document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+      document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+      document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+      clearErrors();
     }
 
-    function resendOTP() {
-      otpSent = false;
-      recaptchaVerifier = null;
-      document.getElementById('recaptcha-container').innerHTML = '';
-      document.getElementById('step2').classList.remove('active');
-      document.getElementById('step1').classList.add('active');
-      setTimeout(initRecaptcha, 500);
+    function clearErrors() {
+      ['loginError','loginSuccess','registerError','registerSuccess'].forEach(id => {
+        document.getElementById(id).textContent = '';
+      });
     }
 
-    async function saveProfile() {
-      const name = document.getElementById('userName').value.trim();
-      const c1Name = document.getElementById('contact1Name').value.trim();
-      const c1Phone = document.getElementById('contact1Phone').value.trim();
-      const c2Name = document.getElementById('contact2Name').value.trim();
-      const c2Phone = document.getElementById('contact2Phone').value.trim();
-      const errorEl = document.getElementById('step3Error');
+    function togglePassword(id) {
+      const input = document.getElementById(id);
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
 
-      if (!name || !c1Name || !c1Phone) {
-        errorEl.textContent = '⚠️ Name aur Contact 1 required hai!';
+    // ===== LOGIN =====
+    async function doLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errorEl = document.getElementById('loginError');
+      const successEl = document.getElementById('loginSuccess');
+
+      if (!email || !password) {
+        errorEl.textContent = '⚠️ Email aur password dono bharein!';
         return;
       }
 
-      document.getElementById('step3').classList.remove('active');
-      document.getElementById('step4').classList.add('active');
+      errorEl.textContent = '';
+      successEl.textContent = 'Logging in...';
 
       try {
-        const user = auth.currentUser;
-        const contacts = [];
-        if (c1Name && c1Phone) contacts.push({ name: c1Name, phone: c1Phone });
-        if (c2Name && c2Phone) contacts.push({ name: c2Name, phone: c2Phone });
+        const result = await auth.signInWithEmailAndPassword(email, password);
+        const user = result.user;
+        const snap = await db.ref(`users/${user.uid}`).once('value');
 
+        localStorage.setItem('safeher_user_id', user.uid);
+
+        if (snap.exists()) {
+          const profile = snap.val();
+          localStorage.setItem('safeher_user_name', profile.name || email.split('@')[0]);
+          if (profile.contacts) {
+            localStorage.setItem('safeher_contacts', JSON.stringify(profile.contacts));
+          }
+          showLoading();
+          setTimeout(() => window.location.href = 'index.html', 1200);
+        } else {
+          // New user via login — show profile setup
+          localStorage.setItem('safeher_user_name', email.split('@')[0]);
+          showStep('stepProfile');
+        }
+      } catch(err) {
+        successEl.textContent = '';
+        if (err.code === 'auth/user-not-found') {
+          errorEl.textContent = '⚠️ Account nahi mila. Pehle register karo!';
+        } else if (err.code === 'auth/wrong-password') {
+          errorEl.textContent = '⚠️ Galat password!';
+        } else if (err.code === 'auth/invalid-email') {
+          errorEl.textContent = '⚠️ Valid email daalo!';
+        } else {
+          errorEl.textContent = '⚠️ ' + err.message;
+        }
+      }
+    }
+
+    // ===== REGISTER =====
+    async function doRegister() {
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const confirm = document.getElementById('regConfirm').value;
+      const errorEl = document.getElementById('registerError');
+      const successEl = document.getElementById('registerSuccess');
+
+      if (!name || !email || !password || !confirm) {
+        errorEl.textContent = '⚠️ Sabhi fields bharein!';
+        return;
+      }
+      if (password.length < 6) {
+        errorEl.textContent = '⚠️ Password kam se kam 6 characters ka hona chahiye!';
+        return;
+      }
+      if (password !== confirm) {
+        errorEl.textContent = '⚠️ Passwords match nahi kar rahe!';
+        return;
+      }
+
+      errorEl.textContent = '';
+      successEl.textContent = 'Account bana rahe hain...';
+
+      try {
+        const result = await auth.createUserWithEmailAndPassword(email, password);
+        const user = result.user;
+
+        // Save basic profile
         await db.ref(`users/${user.uid}`).set({
-          name, phone: user.phoneNumber,
-          contacts, createdAt: new Date().toISOString()
+          name,
+          email,
+          contacts: [],
+          createdAt: new Date().toISOString()
         });
 
         localStorage.setItem('safeher_user_id', user.uid);
         localStorage.setItem('safeher_user_name', name);
-        localStorage.setItem('safeher_contacts', JSON.stringify(contacts));
 
-        setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+        successEl.textContent = '✅ Account ban gaya! Ab contacts add karo.';
+        setTimeout(() => showStep('stepProfile'), 1000);
 
       } catch(err) {
-        errorEl.textContent = '⚠️ Error: ' + err.message;
+        successEl.textContent = '';
+        if (err.code === 'auth/email-already-in-use') {
+          errorEl.textContent = '⚠️ Yeh email already registered hai. Login karo!';
+        } else if (err.code === 'auth/invalid-email') {
+          errorEl.textContent = '⚠️ Valid email daalo!';
+        } else if (err.code === 'auth/weak-password') {
+          errorEl.textContent = '⚠️ Password zyada strong banana hoga!';
+        } else {
+          errorEl.textContent = '⚠️ ' + err.message;
+        }
       }
     }
 
-    window.onload = () => setTimeout(initRecaptcha, 1000);
+    // ===== FORGOT PASSWORD =====
+    async function forgotPassword() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const errorEl = document.getElementById('loginError');
+      const successEl = document.getElementById('loginSuccess');
+
+      if (!email) {
+        errorEl.textContent = '⚠️ Pehle email daalo, phir forgot password click karo.';
+        return;
+      }
+
+      try {
+        await auth.sendPasswordResetEmail(email);
+        successEl.textContent = '✅ Password reset link bheja gaya ' + email + ' pe!';
+        errorEl.textContent = '';
+      } catch(err) {
+        errorEl.textContent = '⚠️ Email nahi mila ya galat hai.';
+      }
+    }
+
+    // ===== SAVE PROFILE =====
+    async function saveProfile() {
+      const c1Name = document.getElementById('contact1Name').value.trim();
+      const c1Phone = document.getElementById('contact1Phone').value.trim();
+      const c2Name = document.getElementById('contact2Name').value.trim();
+      const c2Phone = document.getElementById('contact2Phone').value.trim();
+      const errorEl = document.getElementById('profileError');
+
+      const contacts = [];
+      if (c1Name && c1Phone) contacts.push({ name: c1Name, phone: c1Phone });
+      if (c2Name && c2Phone) contacts.push({ name: c2Name, phone: c2Phone });
+
+      showLoading();
+
+      try {
+        const user = auth.currentUser;
+        await db.ref(`users/${user.uid}/contacts`).set(contacts);
+        localStorage.setItem('safeher_contacts', JSON.stringify(contacts));
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      } catch(err) {
+        showStep('stepProfile');
+        errorEl.textContent = '⚠️ Save nahi hua: ' + err.message;
+      }
+    }
+
+    function skipProfile() {
+      showLoading();
+      setTimeout(() => window.location.href = 'index.html', 800);
+    }
+
+    // ===== HELPERS =====
+    function showStep(id) {
+      ['stepAuth','stepProfile','stepLoading'].forEach(s => {
+        document.getElementById(s).classList.remove('active');
+      });
+      document.getElementById(id).classList.add('active');
+    }
+
+    function showLoading() {
+      showStep('stepLoading');
+    }
   </script>
 </body>
 </html>
