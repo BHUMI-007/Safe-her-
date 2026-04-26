@@ -202,6 +202,6 @@ Licensed under **MIT License** — free to use, modify, and distribute.
 
 ## 👩‍💻 Author
 
-Built with 💜 by **Bhoomi** — Student Developer, Ashoka University
+Built with 💜 by **Bhoomi** — Student Developer, State Institute of Engineering and Technology, Nilokheri
 
 > SafeHer — AI that cares, technology that protects.
